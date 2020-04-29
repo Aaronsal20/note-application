@@ -1,0 +1,72 @@
+/* @import '../../../../node_modules/bootstrap/dist/css/bootstrap.css'; */
+
+.container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.card {
+    /* Add shadows to create the "card" effect */
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+    min-width: 235px;
+    max-width: 235px;
+    margin: 10px 10px;
+    padding: 5px 5px;
+    min-height: 230px;
+    max-height: 500px;
+  }
+  
+  /* On mouse-over, add a deeper shadow */
+  .card:hover {
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+  }
+  
+  /* Add some padding inside the card container */
+  .details {
+    padding: 2px 16px;
+    word-wrap: break-word;
+  }
+
+  .dropdown {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    cursor: pointer;
+    border-radius: 5%;
+  }
+
+  img {
+    max-height: 200px;
+  }
+  
+  .dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    cursor: pointer;
+    border-radius: 5%;
+  }
+
+  .dropdown-content a:hover {
+    background-color: lightgrey;
+  }
+  .dropdown:hover .dropdown-content {
+    display: block;
+  }
+
+  .open {
+    display: none;
+  }
+  

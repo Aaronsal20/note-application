@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
+import { NoteService } from '../core/services/note.service';
+import { NoteInterface } from '../core/interfaces/intefaces';
+import { Router } from '@angular/router';
+import { PageEvent } from '@angular/material';
 
 @Component({
   selector: 'app-body',
@@ -8,10 +12,15 @@ import { FormGroup, FormControl } from '@angular/forms';
 })
 export class BodyComponent implements OnInit {
 
-  constructor() { }
+  constructor(public noteService: NoteService, private router: Router) { }
   color: string;
   imagePreview: any;
   form: FormGroup;
+  allNotes: any = [];
+  totalNotes;
+  notesPerPage = 5;
+  currentPage = 1;
+  pageSizeOptions = [1, 2, 5, 10];
 
   ngOnInit() {
     this.form = new FormGroup({
@@ -19,10 +28,32 @@ export class BodyComponent implements OnInit {
       'content': new FormControl(null),
       image: new FormControl(null)
     });
+    this.getAllNoteCards();
   }
 
   onAddNote() {
-    console.log(this.form);
+    const formData = new FormData();
+    formData.append('image', this.form.get('image').value);
+    formData.append('title', this.form.get('title').value);
+    formData.append('content', this.form.get('content').value);
+    formData.append('color', this.color);
+    this.noteService.addNote(formData).subscribe(res => {
+      console.log(res.result);
+      this.allNotes.push(res.result);
+      // this.router.navigate(['/'])
+    })
+  }
+
+  onChangePage(pageData: PageEvent) {
+    console.log("BodyComponent -> onChangePage -> pageData", pageData)
+    this.currentPage = pageData.pageIndex + 1;
+    this.notesPerPage = pageData.pageSize;
+    this.noteService.getAllNotes(this.notesPerPage, this.currentPage).subscribe((response) => {
+      console.log("BodyComponent -> getAllNoteCards -> res", response);
+        this.allNotes = response.notes;
+        console.log("BodyComponent -> getAllNoteCards -> this.notes", this.allNotes);
+        
+      })
   }
 
   onImagePicked(event: Event) {
@@ -34,6 +65,16 @@ export class BodyComponent implements OnInit {
       this.imagePreview = reader.result;
     };
     reader.readAsDataURL(file);
+  }
+
+  getAllNoteCards() {
+    this.noteService.getAllNotes(this.notesPerPage, this.currentPage).subscribe((response) => {
+    console.log("BodyComponent -> getAllNoteCards -> res", response);
+      this.allNotes = response.notes;
+      this.totalNotes = response.totalNotes;
+      console.log("BodyComponent -> getAllNoteCards -> this.notes", this.allNotes);
+      
+    })
   }
 
 }

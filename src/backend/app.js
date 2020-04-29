@@ -4,12 +4,11 @@ const bodyParser = require("body-parser");
 const mongoose = require('mongoose');
 
 // const postRoutes = require('./routes/posts');
-const userRoutes = require('./routes/user');
+const routes = require('./routes/index');
 
 const app = express();
-console.log(process.env.MONGO_ATLAS_PW)
 
-mongoose.connect("mongodb+srv://aaron123:1k0DqdKvhYlLjOWG" + "@cluster0-xr8lx.mongodb.net/node-ecom?retryWrites=true&w=majority")
+mongoose.connect("mongodb+srv://aaron123:1k0DqdKvhYlLjOWG" + "@cluster0-xr8lx.mongodb.net/note-app?retryWrites=true&w=majority")
 .then(() => {
   console.log('Connected to database');
 })
@@ -19,6 +18,7 @@ mongoose.connect("mongodb+srv://aaron123:1k0DqdKvhYlLjOWG" + "@cluster0-xr8lx.mo
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.static(__dirname+'/public'));
 
 
 app.use((req, res, next) => {
@@ -33,7 +33,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/api/user", userRoutes);
+app.use("", routes);
 
 
 

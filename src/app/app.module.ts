@@ -13,6 +13,9 @@ import { LayoutComponent } from './layout/layout.component';
 import { HeaderComponent } from './header/header.component';
 import { BodyComponent } from './body/body.component';
 import { ColorPickerModule } from 'ngx-color-picker';
+import { NoteCardComponent } from './body/note-card/note-card.component';
+import { DropdownDirective } from './core/dropdown.directive';
+import { RegisterComponent } from './register/register.component';
 
 @NgModule({
   declarations: [
@@ -20,6 +23,9 @@ import { ColorPickerModule } from 'ngx-color-picker';
     LayoutComponent,
     HeaderComponent,
     BodyComponent,
+    NoteCardComponent,
+    DropdownDirective,
+    RegisterComponent
   ],
   imports: [
     BrowserModule,

@@ -4,8 +4,6 @@ const userController = require('../controllers/user');
 
 router.post('/register',userController.createUser);
 
-router.post('/confirmation', userController.confirmEmail);
-
 router.post('/login', userController.signIn);
 
 

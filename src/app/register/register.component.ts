@@ -1,14 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { first } from 'rxjs/operators';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 
-// import { AlertService, AuthenticationService } from '../_services';
+@Component({
+  selector: 'app-register',
+  templateUrl: './register.component.html',
+  styleUrls: ['./register.component.css']
+})
+export class RegisterComponent implements OnInit {
 
-@Component({templateUrl: 'login.component.html',
-styleUrls: ['./login.component.css']})
-export class LoginComponent implements OnInit {
-    loginForm: FormGroup;
+  loginForm: FormGroup;
     loading = false;
     submitted = false;
     returnUrl: string;
@@ -21,8 +22,10 @@ export class LoginComponent implements OnInit {
 
     ngOnInit() {
         this.loginForm = this.formBuilder.group({
-            username: ['', Validators.required],
-            password: ['', Validators.required]
+            email: ['', Validators.required],
+            password: ['', Validators.required],
+            confirm: ['', Validators.required],
+            name: ['', Validators.required],
         });
 
         // reset login status

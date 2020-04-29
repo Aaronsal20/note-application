@@ -1,13 +1,80 @@
-mat-form-field,
+.main {
+  background-color: #F2F3F4; 
+  height: 100%;
+}
+
+.container {
+  display: flex;
+  flex-direction: row;
+}
+
+.title {
+  padding-top: 40px;
+  text-align: center;
+}
+
+mat-card {
+  margin: auto;
+  padding: 70px 50px 60px 20px;
+  width: 300px;
+  height: 300px;
+  margin-top: 60px;
+  border-radius: 10% 0 10% 0;
+}
+
+.image {
+  width: 400px;
+  height: 500px;
+  background-image: url(../../assets/images/efa37e90089939.5e0d769f2db95.png);
+  background-repeat: no-repeat;
+  margin-left: 250px;
+  /* background-repeat: no-repeat; */
+}
+
+/* .form {
+  width: 00px;
+  margin: 50px 50px;
+} */
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+input, 
 textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px #ddd solid;
+  background-color: #F2F3F4;
+}
+
+input:focus, 
+textarea:focus {
+  outline: none;
+  border-color: #f7c08a;
+  background-color: #fff;
+}
+
+.btn-primary {
+  color: greenyellow;
   width: 100%;
 }
 
-mat-spinner {
-  margin: auto;
+.signin {
+    text-align: center;
 }
 
-.login {
-  padding: 135px 500px 71px;
-  text-align: center;
+h2 {
+  font-size: 29px;
+    font-weight: 500;
+}
+
+a {
+  color: blue;
+  cursor: pointer;
 }

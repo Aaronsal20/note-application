@@ -24,11 +24,11 @@
         add_a_photo
         </mat-icon></a>
         <a mat-stroked-button type="button" (click)="colorPicker.click()"><mat-icon
-          matTooltip="Add Image"
+          matTooltip="Add Color"
           matTooltipPosition="above"
           class="datatable-icon"
           aria-hidden="false"
-          aria-label="Add Image"
+          aria-label="Add Color"
         >
        colorize
         </mat-icon></a>
@@ -45,3 +45,20 @@
   </mat-accordion>
 </form>
 </div>
+<section class="container">
+  <div class="notes">
+    <app-note-card *ngIf="allNotes.length > 0" class="note"
+    [noteCards]="allNotes"></app-note-card>
+  </div>
+  <div class="paginator">
+    <mat-paginator *ngIf="allNotes.length > 0" [length]="totalNotes"
+    [pageSize]="notesPerPage"
+    [pageSizeOptions]="pageSizeOptions" (page)="onChangePage($event)">
+</mat-paginator>
+  </div>
+
+</section>
+
+ 
+
+
