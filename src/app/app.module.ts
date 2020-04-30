@@ -16,6 +16,23 @@ import { ColorPickerModule } from 'ngx-color-picker';
 import { NoteCardComponent } from './body/note-card/note-card.component';
 import { DropdownDirective } from './core/dropdown.directive';
 import { RegisterComponent } from './register/register.component';
+import { SocialLoginModule, AuthServiceConfig } from "angularx-social-login";
+import { GoogleLoginProvider, FacebookLoginProvider } from "angularx-social-login";
+
+let config = new AuthServiceConfig([
+  {
+    id: GoogleLoginProvider.PROVIDER_ID,
+    provider: new GoogleLoginProvider("Google-OAuth-Client-Id")
+  },
+  {
+    id: FacebookLoginProvider.PROVIDER_ID,
+    provider: new FacebookLoginProvider("Facebook-App-Id")
+  }
+]);
+ 
+export function provideConfig() {
+  return config;
+}
 
 @NgModule({
   declarations: [
@@ -37,9 +54,14 @@ import { RegisterComponent } from './register/register.component';
     HttpClientModule,
     RouterModule,
     LoginModule,
-    ColorPickerModule
+    ColorPickerModule,
+    SocialLoginModule
   ],
-  providers: [RouterModule],
+  providers: [RouterModule, {
+    provide: AuthServiceConfig,
+    useFactory: provideConfig
+  }
+], 
   bootstrap: [AppComponent]
 })
 export class AppModule { }

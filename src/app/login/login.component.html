@@ -26,7 +26,13 @@
           <div class="form-group">
               <a mat-button role="button" class="btn-primary">Login</a>
           </div>
-          
+          <div>
+            <p>Or</p>
+          </div>
+          <div>
+            <button mat-button type="button" (click)="signInWithFB()" class="btn btn-primary">Sign In With Facebook</button>
+            <button mat-button type="button" (click)="signInWithGoogle()" class="btn btn-primary">Sign In With Google</button>
+          </div>
           <div class="signin">
             <p>Dpn't have an account? <a routerLink="/register">Sign up</a>.</p>
           </div>
