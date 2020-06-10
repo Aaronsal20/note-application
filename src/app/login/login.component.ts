@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { first } from 'rxjs/operators';
-import { AuthService } from "angularx-social-login";
-import { FacebookLoginProvider, GoogleLoginProvider } from "angularx-social-login";
+import { AuthenticationService } from '../core/services/auth.service'
+import { pipe } from 'rxjs';
 
 // import { AlertService, AuthenticationService } from '../_services';
 
@@ -20,12 +19,12 @@ export class LoginComponent implements OnInit {
         private formBuilder: FormBuilder,
         private route: ActivatedRoute,
         private router: Router,
-        private authService: AuthService
+        private authenticationService: AuthenticationService
        ) {}
 
     ngOnInit() {
         this.loginForm = this.formBuilder.group({
-            username: ['', Validators.required],
+            email: ['', Validators.required],
             password: ['', Validators.required]
         });
 
@@ -40,6 +39,7 @@ export class LoginComponent implements OnInit {
     get f() { return this.loginForm.controls; }
 
     onSubmit() {
+        console.log("dddd")
         this.submitted = true;
 
         // stop here if form is invalid
@@ -48,6 +48,10 @@ export class LoginComponent implements OnInit {
         }
 
         this.loading = true;
+        this.authenticationService.login(this.loginForm.value.email, this.loginForm.value.password).subscribe(res => {
+        console.log("LoginComponent -> onSubmit -> res", res)
+            
+        });
         // this.authenticationService.login(this.f.username.value, this.f.password.value)
         //     .pipe(first())
         //     .subscribe(
@@ -63,7 +67,7 @@ export class LoginComponent implements OnInit {
     // signInWithFB(): void {
     //     this.authService.signIn(FacebookLoginProvider.PROVIDER_ID);
     //   }
-      signInWithGoogle(): void {
-        this.authService.signIn(GoogleLoginProvider.PROVIDER_ID);
+      googleSignin() {
+          this.authenticationService.signInWithGoogle();
       }
 }

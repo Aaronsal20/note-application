@@ -1,6 +1,6 @@
 
-<div class="container">
-  <div class="card" [style.background-color]="note.color" *ngFor="let note of noteCards;">
+<div class="container" cdkDropList cdkDropListOrientation="horizontal" (cdkDropListDropped)="drop($event)">
+  <div class="card" [style.background-color]="note.color" *ngFor="let note of noteCards;" cdkDrag>
     <img src="{{note.imagePath}}" alt="Avatar" style="width:100%" *ngIf="note.imagePath">
     <div class="details">
       <h4><b>{{note.title}}</b></h4>
@@ -20,7 +20,7 @@
       <span class="menu"><a href="#"><mat-icon>more_vert</mat-icon></a></span>
       <div class="dropdown-content">
         <a role="button" (click)="deleteNote(note._id)">Delete Note</a>
-        <a role="button">Edit Note</a>
+        <a role="button" (click)="editNote(note._id, note.color, note.content, note.imagePath, note.title)" >Edit Note</a>
       </div>
     </div>
   </div>

@@ -1,0 +1,19 @@
+<mat-toolbar color="primary">
+  <span><a routerLink="/">Schake</a>
+  </span>
+  <span class="spacer1"></span>
+  <app-search></app-search>
+  <span class="spacer"></span>
+  <ul>
+    <li>
+      <a mat-button routerLinkActive="mat-accent" >{{ loggedUser?.name }}</a>
+    </li>
+    <li>
+      <a mat-button routerLink="/register" routerLinkActive="mat-accent" *ngIf="!loggedUser">SignUp</a>
+    </li>
+    <li>
+      <button mat-button (click)="signOut()">Logout</button>
+    </li>
+  </ul>
+  
+</mat-toolbar>

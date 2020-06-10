@@ -38,8 +38,11 @@
       </div>
       <mat-action-row>
         <button mat-raised-button
+        color=""
+       type="button" (click)="reset()">Cancel</button>
+        <button mat-raised-button
         color="accent"
-       type="submit">Save</button>
+       type="submit">{{ editMode ? 'Edit' : 'Create'}}</button>
       </mat-action-row>
     </mat-expansion-panel>
   </mat-accordion>
@@ -48,7 +51,7 @@
 <section class="container">
   <div class="notes">
     <app-note-card *ngIf="allNotes.length > 0" class="note"
-    [noteCards]="allNotes"></app-note-card>
+    [noteCards]="allNotes"(edit)="editNote($event)" ></app-note-card>
   </div>
   <div class="paginator">
     <mat-paginator *ngIf="allNotes.length > 0" [length]="totalNotes"

@@ -11,7 +11,7 @@
       
       </div>
       <mat-card>
-        <form class="login" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <form class="login" [formGroup]="loginForm" (ngSubmit)="createUser()">
             <div class="form-group">
                 <label for="name">Full Name</label>
                 <input type="text" formControlName="name" class="form-control" />
@@ -32,13 +32,13 @@
             </div>
             <div class="form-group">
                 <label for="confirm">Confirm Password</label>
-                <input type="password" formControlName="confirm" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.confirm.errors }" />
-                <div *ngIf="submitted && f.confirm.errors" class="invalid-feedback">
-                    <div *ngIf="f.confirm.errors.required">Password is required</div>
-                </div>
+                <input (change)="password()" type="password" formControlName="confirm" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.confirm.errors }" />
+                <mat-error *ngIf="loginForm.value.password !== loginForm.value.confirm">
+                    Passwords do not match
+                </mat-error>  
             </div>
             <div class="form-group">
-                <a mat-button role="button" class="btn-primary">Sign Up</a>
+                <button mat-button type="submit" class="btn-primary">Sign Up</button>
             </div>
             <div class="signin">
                 <p>Already have an account? <a routerLink="/login">Sign in</a>.</p>

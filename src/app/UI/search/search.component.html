@@ -1,0 +1,25 @@
+<div class="search-bar">
+    <span class="search-button">  <a *ngIf="searchword" mat-stroked-button type="button" (click)="resetSearch()"><mat-icon
+      matTooltip="Add Color"
+      matTooltipPosition="above"
+      class="datatable-icon"
+      aria-hidden="false"
+      aria-label="Add Color"
+    >
+   cancel
+    </mat-icon></a></span>
+    <div class="search">
+      <input matInput type="text"  [(ngModel)]="searchword"(input)="searchThis()" placeholder="Search">
+    </div>
+    <span class="search-button">  <a mat-stroked-button type="button"><mat-icon
+      matTooltip="Add Color"
+      matTooltipPosition="above"
+      class="datatable-icon"
+      aria-hidden="false"
+      aria-label="Add Color"
+    >
+   search
+    </mat-icon></a></span>
+    
+  
+  </div>

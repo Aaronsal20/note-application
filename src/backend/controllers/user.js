@@ -27,7 +27,6 @@ exports.createUser = async (req, res, next) => {
     name: req.body.name,
     password: password,
     email: req.body.email,
-    active: false
   });
   const result = await user.save();
   console.log("exports.createUser -> result", result);
@@ -56,13 +55,13 @@ exports.signIn = async (req, res, next) => {
       });
     }
     const token = jwt.sign(
-      {email: fetchedUser.email, userId: fetchedUser._id},"secret_this_should_be_longer",
+      {email: fetchedUser.email, userId: fetchedUser._id}, process.env.JWT_KEY,
     { expiresIn: "1h" }
     );
     res.status(200).json({
       token: token,
       expiresIn: 3600,
-      userId: fetchedUser._id
+      user: fetchedUser.name
     })
   }).catch(err => {
     return res.status(401).json({

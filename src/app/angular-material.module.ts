@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import {DragDropModule} from '@angular/cdk/drag-drop';
 import {
   MatButtonModule,
   MatCardModule,
@@ -17,8 +18,7 @@ import {
   MatSortModule,
   MatSelectModule,
   MatSnackBarModule,
-  MatProgressBarModule,
-} from '@angular/material';
+  MatProgressBarModule} from '@angular/material';
 import {MatExpansionModule} from '@angular/material/expansion';
 
 
@@ -41,6 +41,7 @@ import {MatExpansionModule} from '@angular/material/expansion';
     MatSortModule,
     MatSnackBarModule,
     MatProgressBarModule,
+    DragDropModule,
     MatSelectModule,
     MatExpansionModule
   ],
@@ -58,6 +59,7 @@ import {MatExpansionModule} from '@angular/material/expansion';
     MatSidenavModule,
     MatDividerModule,
     MatTooltipModule,
+    DragDropModule,
     MatPaginatorModule,
     MatProgressBarModule,
     MatSortModule,

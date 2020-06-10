@@ -8,6 +8,8 @@ const routes = require('./routes/index');
 
 const app = express();
 
+console.log(process.env.JWT_KEY)
+
 mongoose.connect("mongodb+srv://aaron123:1k0DqdKvhYlLjOWG" + "@cluster0-xr8lx.mongodb.net/note-app?retryWrites=true&w=majority")
 .then(() => {
   console.log('Connected to database');

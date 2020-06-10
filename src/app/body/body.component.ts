@@ -16,7 +16,9 @@ export class BodyComponent implements OnInit {
   color: string;
   imagePreview: any;
   form: FormGroup;
+  editMode = false;
   allNotes: any = [];
+  editId: string;
   totalNotes;
   notesPerPage = 5;
   currentPage = 1;
@@ -37,11 +39,21 @@ export class BodyComponent implements OnInit {
     formData.append('title', this.form.get('title').value);
     formData.append('content', this.form.get('content').value);
     formData.append('color', this.color);
-    this.noteService.addNote(formData).subscribe(res => {
-      console.log(res.result);
-      this.allNotes.push(res.result);
-      // this.router.navigate(['/'])
-    })
+
+    if(this.editMode) {
+      this.noteService.updateNote(this.editId, this.form.value.title, this.form.value.content, this.form.value.image, this.color).subscribe(res => {
+        console.log(res);
+        // this.allNotes.push(res.result);
+        // this.router.navigate(['/'])
+      });
+    } else {
+      this.noteService.addNote(formData).subscribe(res => {
+        console.log(res.result);
+        this.allNotes.push(res.result);
+        // this.router.navigate(['/'])
+      })
+    }
+    
   }
 
   onChangePage(pageData: PageEvent) {
@@ -67,14 +79,40 @@ export class BodyComponent implements OnInit {
     reader.readAsDataURL(file);
   }
 
+  editNote(data) {
+    console.log(data); 
+    this.editMode = true;
+    this.form.patchValue({
+      title: data.title,
+      content: data.content,
+      image: data.imagePath
+    });
+    this.imagePreview = data.imagePath;
+    this.color = data.color;
+    this.editId = data.id;
+  }
+
+  // updateNote(id: string) {
+  //   const formData = new FormData();
+  //   formData.append('image', this.form.get('image').value);
+  //   formData.append('title', this.form.get('title').value);
+  //   formData.append('content', this.form.get('content').value);
+  //   formData.append('color', this.color);
+  
+  // }
+
   getAllNoteCards() {
     this.noteService.getAllNotes(this.notesPerPage, this.currentPage).subscribe((response) => {
-    console.log("BodyComponent -> getAllNoteCards -> res", response);
       this.allNotes = response.notes;
       this.totalNotes = response.totalNotes;
-      console.log("BodyComponent -> getAllNoteCards -> this.notes", this.allNotes);
-      
     })
+  }
+
+  reset() {
+    this.form.reset();
+    this.imagePreview = '';
+    this.color = '';
+    this.editMode = false;
   }
 
 }

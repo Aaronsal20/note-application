@@ -10,10 +10,10 @@
     <mat-card>
       <form class="login" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
           <div class="form-group">
-              <label for="username">Username</label>
-              <input type="text" formControlName="username" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.username.errors }" />
-              <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
-                  <div *ngIf="f.username.errors.required">Username is required</div>
+              <label for="email">Email</label>
+              <input type="text" formControlName="email" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.email.errors }" />
+              <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+                  <div *ngIf="f.email.errors.required">Email is required</div>
               </div>
           </div>
           <div class="form-group">
@@ -24,15 +24,9 @@
               </div>
           </div>
           <div class="form-group">
-              <a mat-button role="button" class="btn-primary">Login</a>
+              <button type="submit" mat-button class="btn-primary">Login</button>
           </div>
-          <div>
-            <p>Or</p>
-          </div>
-          <div>
-            <button mat-button type="button" (click)="signInWithFB()" class="btn btn-primary">Sign In With Facebook</button>
-            <button mat-button type="button" (click)="signInWithGoogle()" class="btn btn-primary">Sign In With Google</button>
-          </div>
+ 
           <div class="signin">
             <p>Dpn't have an account? <a routerLink="/register">Sign up</a>.</p>
           </div>

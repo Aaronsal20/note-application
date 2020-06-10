@@ -1,6 +1,9 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { NoteInterface } from 'src/app/core/interfaces/intefaces';
 import { NoteService } from 'src/app/core/services/note.service';
+import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
+
+
 
 @Component({
   selector: 'app-note-card',
@@ -10,6 +13,7 @@ import { NoteService } from 'src/app/core/services/note.service';
 export class NoteCardComponent implements OnInit {
 
   @Input() noteCards: NoteInterface[] = [];
+  @Output() edit = new EventEmitter<any>();
 
   constructor(private noteService: NoteService) { }
 
@@ -24,6 +28,15 @@ export class NoteCardComponent implements OnInit {
     });
       this.noteCards.splice(index, 1);
     });
+  }
+
+  editNote(id: string, color, content, image, title) {
+    this.edit.emit({id: id, color: color, imagePath: image, content: content, title: title});
+  }
+
+  drop(event: CdkDragDrop<string[]>) {
+    console.log("NoteCardComponent -> drop -> event", event)
+    moveItemInArray(this.noteCards, event.previousIndex, event.currentIndex);
   }
 
 }

@@ -1,26 +1,46 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 // import { AuthData } from './auth-data.model';
-import { Subject } from 'rxjs';
+import { Subject, BehaviorSubject, Observable } from 'rxjs';
 import { Router } from '@angular/router';
 
 import { environment } from '../../../environments/environment'
+import { AuthService, GoogleLoginProvider, SocialUser } from 'angularx-social-login';
+import { User } from '../interfaces/intefaces';
+import { map } from 'rxjs/operators';
+import { JwtHelperService } from '@auth0/angular-jwt';
 
 const BACKEND_URL =  environment.apiUrl + '/user/';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService {
+export class AuthenticationService implements OnInit{
+  
   private isAuthenticated = false;
   private token: string;
+  private currentUserSubject: BehaviorSubject<User>;
+    public currentUser: Observable<User>;
   private tokenTimer: any;
-  private userId: string;
+  loggedUser: SocialUser;
+  private loggedIn: boolean;
+  private user: any;
   private authStatusListener = new Subject<boolean>();
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router, private authService: AuthService, public jwtHelper: JwtHelperService) {
+    // this.currentUserSubject = new BehaviorSubject<User>(localStorage.getItem('currentUser'));
+    this.user = localStorage.getItem('currentUser');
+    // this.currentUser = this.currentUserSubject.asObservable();
+  }
+
+  // tslint:disable-next-line: contextual-lifecycle
+  ngOnInit() {
+    
+  }
 
   getToken() {
+    const usertoken = localStorage.getItem("token");
+    this.token = usertoken;
     return this.token;
   }
 
@@ -33,44 +53,72 @@ export class AuthService {
   }
 
   getUserId() {
-    return this.userId;
+    return this.user;
   }
 
-  createUser(email: string, password: string) {
-    const authData = {email: email, password: password};
-    this.http.post(BACKEND_URL + 'signup', authData)
-    .subscribe(() => {
+  createUser(email: string, password: string, name: string) {
+    const authData = {email: email, password: password, name: name};
+    this.http.post('user/register', authData)
+    .subscribe(res => {
+    console.log("AuthService -> createUser -> res", res)
       this.router.navigate["/"];
     }, error => {
       this.authStatusListener.next(false);
     });
   }
 
+  signInWithGoogle(): void {
+    this.authService.signIn(GoogleLoginProvider.PROVIDER_ID).then(res => {
+    console.log("AuthenticationService -> signInWithGoogle -> res", res);
+    this.saveAuthData(res.idToken, res.name)
+        this.router.navigate(['/'])
+    });
+  }
+
   login(email: string, password: string) {
+    console.log("AuthenticationService -> login -> email", email)
     const authData = { email: email, password: password };
-    this.http
-      .post<{ token: string; expiresIn: number, userId: string }>(
-        BACKEND_URL + "login",
+    return this.http
+      .post<any>('user/login',
         authData
-      )
-      .subscribe(response => {
-        const token = response.token;
-        this.token = token;
-        if (token) {
-          const expiresInDuration = response.expiresIn;
+      ).pipe(map(res => {
+      console.log("AuthenticationService -> login -> res", res)
+        // login successful if there's a jwt token in the response
+      if (res && res.token) {
+          const expiresInDuration = res.expiresIn;
           this.setAuthTimer(expiresInDuration);
           this.isAuthenticated = true;
-          this.userId = response.userId;
+          this.user = res.user;
           this.authStatusListener.next(true);
           const now = new Date();
           const expirationDate = new Date(now.getTime() + expiresInDuration * 1000);
           console.log(expirationDate);
-          this.saveAuthData(token, expirationDate, this.userId);
-          this.router.navigate(["/"]);
+          this.saveAuthData(res.token, this.user, expirationDate);
+          // this.currentUserSubject.next(res.user);
+          this.router.navigate(['/']);
         }
-      }, error => {
-        this.authStatusListener.next(false);
-      });
+
+        // return user;
+      }));
+
+      // .subscribe(response => {
+      //   const token = response.token;
+      //   this.token = token;
+      //   if (token) {
+      //     const expiresInDuration = response.expiresIn;
+      //     this.setAuthTimer(expiresInDuration);
+      //     this.isAuthenticated = true;
+      //     this.user = response.user;
+      //     this.authStatusListener.next(true);
+      //     const now = new Date();
+      //     const expirationDate = new Date(now.getTime() + expiresInDuration * 1000);
+      //     console.log(expirationDate);
+      //     this.saveAuthData(token, expirationDate, this.user);
+      //     this.router.navigate(["/"]);
+      //   }
+      // }, error => {
+      //   this.authStatusListener.next(false);
+      // });
   }
 
   autoAuthUser() {
@@ -83,10 +131,17 @@ export class AuthService {
     if (expiresIn > 0) {
       this.token = authInformation.token;
       this.isAuthenticated = true;
-      this.userId = authInformation.userId;
+      this.user = authInformation.userId;
       this.setAuthTimer(expiresIn / 1000);
       this.authStatusListener.next(true);
     }
+  }
+
+  public isAuth(): boolean  {
+    const token = localStorage.getItem('token');
+    // Check whether the token is expired and return
+    // true or false
+    return !this.jwtHelper.isTokenExpired(token);
   }
 
   logout() {
@@ -94,9 +149,15 @@ export class AuthService {
     this.isAuthenticated = false;
     this.authStatusListener.next(false);
     clearTimeout(this.tokenTimer);
-    this.userId = null;
+    this.user = null;
     this.clearAuthData();
-    this.router.navigate(["/"]);
+    this.router.navigate(["/login"]);
+  }
+
+  googleSignOut(): void {
+    this.authService.signOut().then(() => {
+      this.router.navigate(['/login']);
+    });
   }
 
   private setAuthTimer(duration: number) {
@@ -106,27 +167,28 @@ export class AuthService {
     }, duration * 1000);
   }
 
-  private saveAuthData(token: string, expirationDate: Date, userId: string) {
+  private saveAuthData(token: string, user: string, expirationDate?: Date) {
     localStorage.setItem("token", token);
-    localStorage.setItem("expiration", expirationDate.toISOString());
-    localStorage.setItem("userId", userId);
+    //  
+    localStorage.setItem('currentUser',user);
   }
 
   private clearAuthData() {
     localStorage.removeItem("token");
     localStorage.removeItem("expiration");
-    localStorage.removeItem("userId");
+    localStorage.removeItem("currentUser");
   }
 
-  private getAuthData() {
-    const token = localStorage.getItem("token");
+  public getAuthData() {
+    const usertoken = localStorage.getItem("token");
+    console.log("AuthenticationService -> getAuthData -> token", usertoken)
     const expirationDate = localStorage.getItem("expiration");
     const userId = localStorage.getItem("userId");
-    if (!token || !expirationDate) {
+    if (!usertoken || !expirationDate) {
       return;
     }
     return {
-      token: token,
+      token: usertoken,
       expirationDate: new Date(expirationDate),
       userId: userId
     }
